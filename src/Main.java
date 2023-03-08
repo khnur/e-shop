@@ -19,6 +19,7 @@ public class Main {
         try {
             table();
             server();
+//            test();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -31,8 +32,8 @@ public class Main {
         HttpServer httpServer = HttpServer.create(new InetSocketAddress(8080), 0);
         httpServer.createContext('/' + users, new UserHandler())
                 .setAuthenticator(new BasicAuth(users));
-//        httpServer.createContext('/' + items, new ItemHandler())
-//                .setAuthenticator(new BasicAuth(items));
+        httpServer.createContext('/' + items, new ItemHandler())
+                .setAuthenticator(new BasicAuth(items));
         httpServer.createContext("/register", new RegisterHandler());
         httpServer.start();
         System.out.println("Server started on port 8080");
@@ -62,5 +63,8 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    private static void test() throws SQLException {
+
     }
 }

@@ -2,20 +2,21 @@ package model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Date;
 
 public final class Order {
     public static final String getUserId = "user_id";
-    public static final String getCreatedDateTime = "createdDateTime";
-    public static final String getTotalPrice = "totalPrice";
+    public static final String getTotalPrice = "total_price";
+    public static final String getCreatedDateTime = "created_date";
     private long id;
     private long userId;
-    private String createdDateTime;
     private int totalPrice;
+    private Date createdDateTime;
 
     public Order() {
     }
 
-    public Order(long userId, String createdDateTime, int totalPrice) {
+    public Order(long userId, int totalPrice, Date createdDateTime) {
         this.userId = userId;
         this.createdDateTime = createdDateTime;
         this.totalPrice = totalPrice;
@@ -25,8 +26,8 @@ public final class Order {
         Order order = new Order();
         order.setId(resultSet.getLong("id"));
         order.setUserId(resultSet.getLong(Order.getUserId));
-        order.setCreatedDateTime(resultSet.getString(Order.getCreatedDateTime));
         order.setTotalPrice(resultSet.getInt(Order.getTotalPrice));
+        order.setCreatedDateTime(resultSet.getDate(Order.getCreatedDateTime));
         return order;
     }
 
@@ -46,11 +47,11 @@ public final class Order {
         this.userId = userId;
     }
 
-    public String getCreatedDateTime() {
+    public Date getCreatedDateTime() {
         return createdDateTime;
     }
 
-    public void setCreatedDateTime(String createdDateTime) {
+    public void setCreatedDateTime(Date createdDateTime) {
         this.createdDateTime = createdDateTime;
     }
 
@@ -60,5 +61,13 @@ public final class Order {
 
     public void setTotalPrice(int totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    @Override
+    public String toString() {
+        return "{\"id\": " + id +
+                ", \"user_id\": " + "\"" + userId + "\"" +
+                ", \"total_price\": " + "\"" + totalPrice + "\"" +
+                ", \"created_date\": " + "\"" + createdDateTime + "\"" + "}";
     }
 }

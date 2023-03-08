@@ -42,7 +42,6 @@ public abstract class DAO {
         PreparedStatement preparedStatement = connection.
                 prepareStatement("SELECT 1 FROM " + table + " WHERE id = ?");
         preparedStatement.setLong(1, id);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        return resultSet.next();
+        return preparedStatement.executeQuery().next();
     }
 }

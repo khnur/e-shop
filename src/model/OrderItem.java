@@ -16,7 +16,7 @@ public final class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(int orderId, int itemId, int quantity, int subtotal) {
+    public OrderItem(long orderId, long itemId, int quantity, int subtotal) {
         this.orderId = orderId;
         this.itemId = itemId;
         this.quantity = quantity;
