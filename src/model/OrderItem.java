@@ -4,8 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public final class OrderItem {
-    public static final String getOrderId = "orderId";
-    public static final String getItemId = "itemId";
+    public static final String getOrderId = "order_id";
+    public static final String getItemId = "item_id";
     public static final String getQuantity = "quantity";
     public static final String getSubtotal = "subtotal";
     private long id;
@@ -13,6 +13,7 @@ public final class OrderItem {
     private long itemId;
     private int quantity;
     private int subtotal;
+
     public OrderItem() {
     }
 
@@ -22,6 +23,7 @@ public final class OrderItem {
         this.quantity = quantity;
         this.subtotal = subtotal;
     }
+
     public static OrderItem resultSetToOrderItem(ResultSet resultSet) throws SQLException {
         OrderItem orderItem = new OrderItem();
         orderItem.setId(resultSet.getLong("id"));
@@ -70,5 +72,14 @@ public final class OrderItem {
 
     public void setSubtotal(int subtotal) {
         this.subtotal = subtotal;
+    }
+
+    @Override
+    public String toString() {
+        return "{\"id\": " + id +
+                ", \"order_id\": " + "\"" + orderId + "\"" +
+                ", \"item_id\": " + "\"" + itemId + "\"" +
+                ", \"quantity\": " + "\"" + quantity + "\"" +
+                ", \"subtotal\": " + "\"" + subtotal + "\"" + "}";
     }
 }

@@ -2,6 +2,8 @@ package security;
 
 import com.sun.net.httpserver.*;
 import exception.UserNotExistsException;
+import model.Item;
+import model.Order;
 import model.User;
 import dao.UserDAO;
 import util.Database;
@@ -50,22 +52,32 @@ public class BasicAuth extends BasicAuthenticator {
         }
 
         if (checkCredentials(phone, pass)) {
+            String pathBase = exchange.getRequestURI().getPath().substring(1).split("/")[0];
+            String users = User.class.getSimpleName().toLowerCase() + 's';
+            String items = Item.class.getSimpleName().toLowerCase() + 's';
+            String orders = Order.class.getSimpleName().toLowerCase() + 's';
+
             if ("GET".equalsIgnoreCase(exchange.getRequestMethod()))
                 return new Authenticator.Success(
                         new HttpPrincipal(phone, realm)
                 );
             if (("POST".equalsIgnoreCase(exchange.getRequestMethod()) || "PUT".equalsIgnoreCase(exchange.getRequestMethod()))
+                    && (pathBase.equalsIgnoreCase(users) || pathBase.equalsIgnoreCase(items))
                     && user.getRole().equals(Role.ROLE_ADMIN.getRole())) {
                 return new Authenticator.Success(
                         new HttpPrincipal(phone, realm)
                 );
+            }
+            if ("POST".equalsIgnoreCase(exchange.getRequestMethod()) && pathBase.equalsIgnoreCase(orders)
+                    && user.getRole().equals(Role.ROLE_USER.getRole())) {
+                return new Authenticator.Success(new HttpPrincipal(phone, realm));
             } else {
                 return new Authenticator.Failure(403);
             }
+        } else {
+            setAuthHeader(exchange);
+            return new Authenticator.Failure(401);
         }
-
-        setAuthHeader(exchange);
-        return new Authenticator.Failure(401);
     }
 
     private void setAuthHeader(HttpExchange exchange) {

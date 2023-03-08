@@ -20,10 +20,15 @@ public abstract class Handler {
         String body = stringBuilder.toString();
         body = body.substring(1, body.length() - 1);
         body = body.replaceAll("\"", "");
+//        body = body.substring(body.indexOf("[") + 1, body.length() - 1);
+
+        String finalBody = body.replace("{", "").replace("}", "");
 
         Map<String, String> bodyMap = new HashMap<>();
-        Arrays.stream(body.split(","))
-                .forEach(string -> bodyMap.put(string.split(":")[0].trim(), string.split(":")[1].trim()));
+
+        Arrays.stream(finalBody.split(",")).forEach(
+                string -> bodyMap.put(string.split(":")[0].trim(), string.split(":")[1].trim())
+        );
         return bodyMap;
     }
 

@@ -1,9 +1,11 @@
 import com.sun.net.httpserver.HttpServer;
 import dao.*;
 import handler.ItemHandler;
+import handler.OrderHandler;
 import handler.RegisterHandler;
 import handler.UserHandler;
 import model.Item;
+import model.Order;
 import model.User;
 import security.BasicAuth;
 import util.Database;
@@ -28,12 +30,16 @@ public class Main {
     private static void server() throws IOException {
         String users = User.class.getSimpleName().toLowerCase() + 's';
         String items = Item.class.getSimpleName().toLowerCase() + 's';
+        String orders = Order.class.getSimpleName().toLowerCase() + 's';
 
         HttpServer httpServer = HttpServer.create(new InetSocketAddress(8080), 0);
         httpServer.createContext('/' + users, new UserHandler())
                 .setAuthenticator(new BasicAuth(users));
         httpServer.createContext('/' + items, new ItemHandler())
                 .setAuthenticator(new BasicAuth(items));
+        httpServer.createContext('/' + orders, new OrderHandler())
+                .setAuthenticator(new BasicAuth(orders));
+
         httpServer.createContext("/register", new RegisterHandler());
         httpServer.start();
         System.out.println("Server started on port 8080");
@@ -55,6 +61,7 @@ public class Main {
         for (User user : users)
             System.out.println(user);
     }
+
     private static void createAdmin() {
         try (Connection connection = Database.getConnection()) {
             UserDAO userDAO = UserDAO.getInstance(connection);
@@ -64,6 +71,7 @@ public class Main {
             e.printStackTrace();
         }
     }
+
     private static void test() throws SQLException {
 
     }
