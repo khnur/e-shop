@@ -42,11 +42,8 @@ public class UserHandler implements HttpHandler {
         } catch (EmptyUserSetException | UserNotExistsException | UserAlreadyExistsException e) {
             ErrorHandler.handleError(exchange, e.getMessage(), 400);
             e.printStackTrace();
-        } catch (SQLException e) {
+        } catch (NumberFormatException | SQLException e) {
             ErrorHandler.handleError(exchange, "Invalid Request Body", 400);
-            e.printStackTrace();
-        } catch (NumberFormatException e) {
-            ErrorHandler.handleError(exchange, "Invalid ID", 400);
             e.printStackTrace();
         } catch (Exception e) {
             ErrorHandler.handleError(exchange, "Something went wrong", 500);
@@ -70,22 +67,7 @@ public class UserHandler implements HttpHandler {
             return;
         }
 
-        InputStream inputStream = httpExchange.getRequestBody();
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-        StringBuilder stringBuilder = new StringBuilder();
-
-        String str;
-        while ((str = bufferedReader.readLine()) != null)
-            stringBuilder.append(str);
-
-        String body = stringBuilder.toString();
-        body = body.substring(1, body.length() - 1);
-        body = body.replaceAll("\"", "");
-
-        Map<String, String> bodyMap = new HashMap<>();
-        Arrays.stream(body.split(","))
-                .forEach(string -> bodyMap.put(string.split(":")[0].trim(), string.split(":")[1].trim()));
+        Map<String, String> bodyMap = Handler.parseJsonRequest(httpExchange.getRequestBody());
 
         if (bodyMap.get(User.getAddress) == null || bodyMap.get(User.getAddress).isBlank()) {
             ErrorHandler.handleError(httpExchange, "Address must be NOT empty", 400);
@@ -93,7 +75,8 @@ public class UserHandler implements HttpHandler {
         }
         userDAO.updateById(id, User.getAddress, bodyMap.get(User.getAddress));
         response = "{\"message\": \"" + User.class.getSimpleName() + " successfully updated\", \"status\": 200}";
-        streamWrite(httpExchange, response);
+
+        Handler.streamWrite(httpExchange, response);
     }
 
     static void handlePostRequest(HttpExchange httpExchange, UserDAO userDAO)
@@ -131,7 +114,7 @@ public class UserHandler implements HttpHandler {
 
         String response = "{\"message\": \"" + User.class.getSimpleName() + " successfully created\", \"status\": 200}";
 
-        streamWrite(httpExchange, response);
+        Handler.streamWrite(httpExchange, response);
     }
 
     private static void handleGetRequest(HttpExchange httpExchange, UserDAO userDAO) throws SQLException, IOException {
@@ -149,15 +132,6 @@ public class UserHandler implements HttpHandler {
             response = userDAO.getAllUsers().toString();
         }
 
-        streamWrite(httpExchange, response);
-    }
-
-    private static void streamWrite(HttpExchange httpExchange, String response) throws IOException {
-        httpExchange.getRequestHeaders().add("Content-Type", "application/json");
-        httpExchange.sendResponseHeaders(200, response.getBytes().length);
-        OutputStream outputStream = httpExchange.getResponseBody();
-        outputStream.write(response.getBytes());
-        outputStream.flush();
-        outputStream.close();
+        Handler.streamWrite(httpExchange, response);
     }
 }

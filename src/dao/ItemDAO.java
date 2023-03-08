@@ -7,6 +7,7 @@ import model.Item;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ItemDAO extends DAO {
@@ -54,8 +55,8 @@ public class ItemDAO extends DAO {
         preparedStatement.setString(3, item.getManufacturer());
         preparedStatement.setString(4, item.getDescription());
         preparedStatement.setString(5, item.getType());
-        preparedStatement.setDate(6, item.getCreatedDateTime());
-        preparedStatement.setDate(7, item.getModifiedDateTime());
+        preparedStatement.setDate(6, new Date(Calendar.getInstance().getTimeInMillis()));
+        preparedStatement.setDate(7, new Date(Calendar.getInstance().getTimeInMillis()));
         preparedStatement.setBoolean(8, true);
 
         preparedStatement.executeUpdate();

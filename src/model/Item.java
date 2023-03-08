@@ -6,14 +6,14 @@ import java.sql.SQLException;
 import java.util.Objects;
 
 public final class Item {
-    public static final String getPrice = "price_tg";
+    public static final String getPrice = "price";
     public static final String getName = "name";
     public static final String getManufacturer = "manufacturer";
     public static final String getDescription = "description";
     public static final String getType = "type";
-    public static final String getCreatedDateTime = "createdDateTime";
-    public static final String getModifiedDateTime = "modifiedDateTime";
-    public static final String getIsActive = "isActive";
+    public static final String getCreatedDateTime = "created_date";
+    public static final String getModifiedDateTime = "updated_date";
+    public static final String getIsActive = "is_active";
     private long id;
     private int price;
     private String name;
@@ -27,16 +27,12 @@ public final class Item {
     public Item() {
     }
 
-    public Item(int price, String name, String manufacturer, String description, String type, Date createdDateTime,
-                Date modifiedDateTime, boolean isActive) {
+    public Item(int price, String name, String manufacturer, String description, String type) {
         this.price = price;
         this.name = name;
         this.manufacturer = manufacturer;
         this.description = description;
         this.type = type;
-        this.createdDateTime = createdDateTime;
-        this.modifiedDateTime = modifiedDateTime;
-        this.isActive = isActive;
     }
 
     public static Item resultSetToItem(ResultSet resultSet) throws SQLException {
@@ -52,6 +48,7 @@ public final class Item {
         item.setIsActive(resultSet.getBoolean(Item.getIsActive));
         return item;
     }
+
     public boolean getIsActive() {
         return isActive;
     }
@@ -126,15 +123,15 @@ public final class Item {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Item item = (Item) o;
-        return id == item.id && price == item.price && Objects.equals(name, item.name) && Objects.equals(manufacturer, item.manufacturer) && Objects.equals(description, item.description) && Objects.equals(type, item.type) && Objects.equals(createdDateTime, item.createdDateTime) && Objects.equals(modifiedDateTime, item.modifiedDateTime);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, price, name, manufacturer, description, type, createdDateTime, modifiedDateTime);
+    public String toString() {
+        return "{\"id\": " + id +
+                ", \"price\": " + "\"" + price + "\"" +
+                ", \"name\": " + "\"" + name + "\"" +
+                ", \"manufacturer\": " + "\"" + manufacturer + "\"" +
+                ", \"description\": " + "\"" + description + "\"" +
+                ", \"type\": " + "\"" + type + "\"" +
+                ", \"created_date\": " + "\"" + createdDateTime + "\"" +
+                ", \"updated_date\": " + "\"" + modifiedDateTime + "\"" +
+                ", \"is_active\": " + "\"" + isActive + "\"" + "}";
     }
 }
