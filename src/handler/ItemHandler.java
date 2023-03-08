@@ -3,6 +3,8 @@ package handler;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import dao.ItemDAO;
+import exception.EmptyItemSetException;
+import exception.ItemNotExistsException;
 import model.Item;
 import util.Database;
 
@@ -20,11 +22,25 @@ public class ItemHandler implements HttpHandler {
         }
         try (Connection connection = Database.getConnection()) {
             ItemDAO itemDAO = ItemDAO.getInstance(connection);
-            if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
-
+            if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+                handlePostRequest(exchange, itemDAO);
+                return;
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+                handleGetRequest(exchange, itemDAO);
+                return;
+            }
+
+            ErrorHandler.handleError(exchange, "Method Not Allowed", 405);
+        } catch (EmptyItemSetException | ItemNotExistsException e) {
+            ErrorHandler.handleError(exchange, e.getMessage(), 400);
+            e.printStackTrace();
+        } catch (NumberFormatException | SQLException e) {
+            ErrorHandler.handleError(exchange, "Invalid Request Body", 400);
+            e.printStackTrace();
+        } catch (Exception e) {
+            ErrorHandler.handleError(exchange, "Somthing wend wrong", 500);
+            e.printStackTrace();
         }
 
     }
@@ -40,8 +56,9 @@ public class ItemHandler implements HttpHandler {
                 bodyMap.get(Item.getDescription), bodyMap.get(Item.getType)));
         String response = "{\"message\": \"Item successfully created\", \"status\": 200}";
 
-        Handler.streamWrite(exchange,response);
+        Handler.streamWrite(exchange, response);
     }
+
     private void handleGetRequest(HttpExchange exchange, ItemDAO itemDAO) throws SQLException, IOException {
         String response;
         String path = exchange.getRequestURI().getPath().substring(1);
