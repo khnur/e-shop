@@ -1,6 +1,7 @@
 package dao;
 
 import exception.EmptyUserSetException;
+import exception.ItemNotExistsException;
 import exception.UserNotExistsException;
 import model.User;
 import util.HashUtil;
@@ -113,5 +114,10 @@ public class UserDAO extends DAO {
         preparedStatement.setString(1, phone);
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet.next();
+    }
+    public void updateUserById(long id, String col, String val) throws SQLException {
+        if (!existsById(id))
+            throw new UserNotExistsException("There is NO user with such id");
+        updateById(id, col, val);
     }
 }

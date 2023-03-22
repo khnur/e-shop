@@ -3,6 +3,7 @@ package dao;
 import exception.EmptyItemSetException;
 import exception.EmptyUserSetException;
 import exception.ItemNotExistsException;
+import exception.UserNotExistsException;
 import model.Item;
 
 import java.sql.*;
@@ -79,5 +80,10 @@ public class ItemDAO extends DAO {
         if (!resultSet.next())
             throw new ItemNotExistsException("Item does NOT exits");
         return Item.resultSetToItem(resultSet);
+    }
+    public void updateItemById(long id, String col, String val) throws SQLException {
+        if (!existsById(id))
+            throw new ItemNotExistsException("There is NO item with such id");
+        updateById(id, col, val);
     }
 }

@@ -39,7 +39,7 @@ public class ItemHandler implements HttpHandler {
             ErrorHandler.handleError(exchange, "Invalid Request Body", 400);
             e.printStackTrace();
         } catch (Exception e) {
-            ErrorHandler.handleError(exchange, "Somthing wend wrong", 500);
+            ErrorHandler.handleError(exchange, "Something wend wrong", 500);
             e.printStackTrace();
         }
 

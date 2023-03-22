@@ -26,10 +26,7 @@ public abstract class DAO {
         return preparedStatement.executeQuery();
     }
 
-    public void updateById(long id, String col, String val) throws SQLException {
-        if (!existsById(id))
-            throw new UserNotExistsException("There is NO user with such id");
-
+    protected void updateById(long id, String col, String val) throws SQLException {
         PreparedStatement preparedStatement = connection
                 .prepareStatement("UPDATE " + table + " SET " + col + " = ? WHERE id = ?");
         preparedStatement.setString(1, val);

@@ -20,7 +20,6 @@ public abstract class Handler {
         String body = stringBuilder.toString();
         body = body.substring(1, body.length() - 1);
         body = body.replaceAll("\"", "");
-//        body = body.substring(body.indexOf("[") + 1, body.length() - 1);
 
         String finalBody = body.replace("{", "").replace("}", "");
 
@@ -30,6 +29,23 @@ public abstract class Handler {
                 string -> bodyMap.put(string.split(":")[0].trim(), string.split(":")[1].trim())
         );
         return bodyMap;
+    }
+
+    static Map<String, String> parseJsonArrayRequest(InputStream inputStream) throws IOException {
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        StringBuilder stringBuilder = new StringBuilder();
+
+        String str;
+        while((str = bufferedReader.readLine()) != null)
+            stringBuilder.append(str);
+
+        String body = stringBuilder.toString();
+
+
+        body = body.substring(body.indexOf("[") + 1, body.lastIndexOf("]") + 1);
+
+        return null;
     }
 
     static void streamWrite(HttpExchange httpExchange, String response) throws IOException {

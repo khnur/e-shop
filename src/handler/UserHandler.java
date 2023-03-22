@@ -73,7 +73,7 @@ public class UserHandler implements HttpHandler {
             ErrorHandler.handleError(httpExchange, "Address must be NOT empty", 400);
             return;
         }
-        userDAO.updateById(id, User.getAddress, bodyMap.get(User.getAddress));
+        userDAO.updateUserById(id, User.getAddress, bodyMap.get(User.getAddress));
         response = "{\"message\": \"" + User.class.getSimpleName() + " successfully updated\", \"status\": 200}";
 
         Handler.streamWrite(httpExchange, response);

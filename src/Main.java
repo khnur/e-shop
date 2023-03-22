@@ -20,14 +20,14 @@ public class Main {
     public static void main(String[] args) {
         try {
             table();
-            server();
+            router();
 //            test();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static void server() throws IOException {
+    private static void router() throws IOException {
         String users = User.class.getSimpleName().toLowerCase() + 's';
         String items = Item.class.getSimpleName().toLowerCase() + 's';
         String orders = Order.class.getSimpleName().toLowerCase() + 's';
